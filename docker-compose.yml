@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  server:
+    build: .
+    container_name: "network-companion"
+    environment:
+      - "TERM=xterm-256color"
+    privileged: true
+    network_mode: "bridge"  
