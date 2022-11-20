@@ -1,29 +1,31 @@
-# Playing 🎮 with Linux Network Namespaces 
+# Playing 🎮 with Linux Network Namespaces
 
 ### Objectives
 
 Main tasks
+
 - [x] create new network namespaces
-- [ ] connect two network namespaces via virtual ethernet (veth) 
+- [ ] connect two network namespaces via virtual ethernet (veth)
 - [ ] connect to a `python HTTP server` from a separate namespace
 - [ ] connect two network namespaces via a virtual switch bridge
 - [ ] use IP masquerading to establish an ingress connection
 
 Meta tasks
+
 - [x] docker test environment setup
-- [x] apply color in bash at docker startup 
+- [x] apply color in bash at docker startup
 - [x] run container forever
 - [x] test network types
 
+<details>
+<summary>Connect Two Namespaces - TL;DR 👇</summary>
+<br/>
 
+Outline for basic command and process.
 
-### Connect Two Namespaces - TL;DR 👇
+**Note**
 
-Outline for basic command and process. 
-
- **Note**
 > Please prefix following commands with `sudo` if we're not logged in as a root user.
-
 
 1. Create a new network namespace -
 
@@ -34,14 +36,15 @@ ip netns add <NAMESPACE_NAME>
 2. Create a veth cable and assign an interface to a particular namespace
 
 ```bash
-ip link add <INTERFACE_NAME> type veth peer name <OTHER_INTERFACE_NAME> 
+ip link add <INTERFACE_NAME> type veth peer name <OTHER_INTERFACE_NAME>
 ip link set <INTERFACE_NAME> netns <NAMESPACE_NAME>
 ```
 
- **Note**
-> This step must be done after the interface assigning to a namespace is complete. 
+**Note**
 
-Now, enter into one of the namespaces 
+> This step must be done after the interface assigning to a namespace is complete.
+
+Now, enter into one of the namespaces
 
 ```bash
 ip netns exec <NAMESPACE_NAME> bash
@@ -80,4 +83,6 @@ ping -I <INTERFACE> <OTHER_NAMESAPCE_IP> # 👈 from the other namespace
 tcpdump -v -i <OTHER_INTERFACE> # 👈 from the other namespace
 ```
 
-Find the step-by-step example to connect two network namespaces [here](./docs/connect_via_veth.md). 
+</details>
+
+Find the step-by-step example to connect two network namespaces [here](./libs/connect_via_veth/connect_via_veth.md).

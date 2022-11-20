@@ -1,7 +1,10 @@
 FROM ubuntu:jammy
 RUN apt update -y
 RUN apt install -y net-tools telnet curl \
-    iproute2 iputils-ping tcpdump wget
+    iproute2 iputils-ping tcpdump wget \
+    vim nano
+WORKDIR /app
+COPY . .
 CMD [ "sleep", "infinity" ]
 
 # build the image and run as follows
