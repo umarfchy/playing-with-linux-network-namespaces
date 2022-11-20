@@ -6,7 +6,7 @@ Main tasks
 
 - [x] create new network namespaces
 - [x] connect two network namespaces via virtual ethernet (veth)
-- [ ] connect to a `python HTTP server` on a separate namespace
+- [x] connect to a `python HTTP server` on a separate namespace
 - [ ] connect two network namespaces via a virtual switch bridge
 - [ ] use IP masquerading to establish an ingress connection
 
