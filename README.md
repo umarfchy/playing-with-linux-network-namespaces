@@ -17,7 +17,7 @@ Meta tasks
 
 
 
-### Connect Two Namespaces
+### Connect Two Namespaces - TL;DR 👇
 
 Outline for basic command and process. 
 
@@ -38,7 +38,8 @@ ip link add <INTERFACE_NAME> type veth peer name <OTHER_INTERFACE_NAME>
 ip link set <INTERFACE_NAME> netns <NAMESPACE_NAME>
 ```
 
-Note: This step must be done after the interface assigning to a namespace is complete. 
+ **Note**
+> This step must be done after the interface assigning to a namespace is complete. 
 
 Now, enter into one of the namespaces 
 
@@ -60,13 +61,7 @@ ip link set dev <INTERFACE_NAME> up
 
 5. Configure route
 
-If we just want to see if the network request reaches the other namespace then we can do the following.
-
-```bash
-ip route add <GATEWAY_IP> dev <INTERFACE_NAME>
-```
-
-However, we can optionally make it the default gateway and thus also receive packets from the namespace as well. I'd recommend using 👇 this.  
+If we just want the namespace to send packets to the server that is making the request, we need to configure routes in both namespaces as follows -
 
 ```bash
 ip route add default via <GATEWAY_IP> dev <INTERFACE_NAME>
@@ -82,7 +77,7 @@ We can also specify the interface
 
 ```bash
 ping -I <INTERFACE> <OTHER_NAMESAPCE_IP> # 👈 from the other namespace
-tcpdump -iv <OTHER_INTERFACE> # 👈 from the other namespace
+tcpdump -v -i <OTHER_INTERFACE> # 👈 from the other namespace
 ```
 
 Find the step-by-step example to connect two network namespaces [here](./docs/connect_via_veth.md). 
