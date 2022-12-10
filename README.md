@@ -18,7 +18,7 @@ Meta tasks
 - [x] test network types
 
 <details>
-<summary>Connect Two Namespaces - TL;DR 👇</summary>
+<summary>Connect Two Namespaces Using VETH- TL;DR 👇</summary>
 <br/>
 
 Outline for basic command and process.
@@ -27,7 +27,7 @@ Outline for basic command and process.
 
 > Please prefix following commands with `sudo` if we're not logged in as a root user.
 
-1. Create a new network namespace -
+1. Create a new network namespace
 
 ```bash
 ip netns add <NAMESPACE_NAME>
@@ -77,6 +77,75 @@ ping <OTHER_NAMESAPCE_IP>
 ```
 
 We can also specify the interface
+
+```bash
+ping -I <INTERFACE> <OTHER_NAMESAPCE_IP> # 👈 from the other namespace
+tcpdump -v -i <OTHER_INTERFACE> # 👈 from the other namespace
+```
+
+</details>
+
+Find the step-by-step example to connect two network namespaces [here](./libs/connect_via_veth/connect_via_veth.md).
+
+<details>
+<summary>Connect Two Namespaces Using Bridge - TL;DR 👇</summary>
+<br/>
+
+Outline for basic command and process.
+
+**Note**
+
+> Please prefix following commands with `sudo` if we're not logged in as a root user.
+
+1. Create a new network namespace
+
+```bash
+ip netns add <NAMESPACE_NAME>
+```
+
+2. Create a bridge
+
+```bash
+ip link add <BRIDGE_NAME> type bridge
+```
+
+4. Create veth cables and assign interfaces
+
+```bash
+ip link add <INTERFACE_NAME> type veth peer name <BRIDGE_INTERFACE_NAME>
+ip link set <INTERFACE_NAME> netns <NAMESPACE_NAME>
+ip link set <BRIDGE_INTERFACE_NAME> master <BRIDGE_NAME>
+```
+
+3. Assign an IP address to the Bridge interface
+
+```bash
+ip addr add <SUBNET_WITH_CIDR> dev <BRIDGE_NAME>
+```
+
+3. Assign an IP address to a namespace interface
+
+```bash
+ip netns exec <NAMESPACE_NAME> ip addr add <SUBNET_WITH_CIDR> dev <INTERFACE_NAME>
+```
+
+4. Bring up the interface
+
+```bash
+ip link set dev <BRIDGE_INTERFACE_NAME> up
+ip link set dev <BRIDGE_NAME> up
+ip netns exec <NAMESPACE_NAME> ip link set dev <INTERFACE_NAME> up
+```
+
+5. Configure route
+
+If we just want the namespace to send packets to the server that is making the request, we need to configure routes in both namespaces as follows -
+
+```bash
+ip route add default via <GATEWAY_IP> dev <INTERFACE_NAME>
+```
+
+6. Test with `ping`
 
 ```bash
 ping -I <INTERFACE> <OTHER_NAMESAPCE_IP> # 👈 from the other namespace
